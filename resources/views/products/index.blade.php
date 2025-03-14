@@ -1,33 +1,27 @@
-<!-- 商品データの新規登録ページへのリンクを作成 -->
-<a href="{{ route('products.create') }}"> Create New Product</a>
+@extends('layouts.app')
 
-<table>
-   <tr>
-       <th>Name</th>
-       <th>Description</th>
-       <th>Price</th>
-       <th>Category ID</th>
-       <th >Action</th>
-   </tr>
-   <!-- コントローラから受け取った変数$productsに格納されている商品データを1つずつ$productに渡 -->
-   @foreach ($products as $product)
-   <tr>
-       <td>{{ $product->name }}</td>
-       <td>{{ $product->description }}</td>
-       <td>{{ $product->price }}</td>
-       <td>{{ $product->category_id }}</td>
-       <td>
-        <!-- 削除フォーム -->
-       <form action="{{ route('products.destroy',$product->id) }}" method="POST">
-        <!-- 商品の個別ページへのリンク -->
-           <a href="{{ route('products.show',$product->id) }}">Show</a>
-           <!-- 商品情報の編集ページへのリンク -->
-           <a href="{{ route('products.edit',$product->id) }}">Edit</a>
-           @csrf
-                @method('DELETE')
-                <button type="submit">Delete</button>
-            </form>
-       </td>
-   </tr>
-   @endforeach
-</table>
+@section('content')
+<div class="row">
+   <div class="col-9">
+       <div class="container mt-4">
+           <div class="row w-100">
+               @foreach($products as $product)
+               <div class="col-3">
+                   <a href="{{route('products.show', $product)}}">
+                       <img src="{{ asset('img/dummy.png')}}" class="img-thumbnail">
+                   </a>
+                   <div class="row">
+                       <div class="col-12">
+                           <p class="samuraimart-product-label mt-2">
+                               {{$product->name}}<br>
+                               <label>￥{{$product->price}}</label>
+                           </p>
+                       </div>
+                   </div>
+               </div>
+               @endforeach
+           </div>
+       </div>
+   </div>
+</div>
+@endsection

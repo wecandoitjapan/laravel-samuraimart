@@ -1,25 +1,45 @@
-<x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
-    </div>
+@extends('layouts.app')
 
-    <!-- Session Status -->
-    <x-auth-session-status class="mb-4" :status="session('status')" />
+@section('content')
+<div class="container">
+   <div class="row justify-content-center">
+       <div class="col-md-5">
+           <h3 class="mt-3 mb-3">パスワード再設定</h3>
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
+           <p>
+               ご登録時のメールアドレスを入力してください。<br>
+               パスワード再発行用のメールをお送りします。
+           </p>
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
+           <hr>
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>
-                {{ __('Email Password Reset Link') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+           @if (session('status'))
+           <div class="alert alert-success" role="alert">
+               {{ session('status') }}
+           </div>
+           @endif
+
+
+           <form method="POST" action="{{ route('password.email') }}">
+               @csrf
+
+               <div class="form-group">
+                   <input id="email" type="email" class="form-control @error('email') is-invalid @enderror samuraimart-login-input" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="メールアドレス">
+
+                   @error('email')
+                   <span class="invalid-feedback" role="alert">
+                       <strong>メールアドレスが正しくない可能性があります。</strong>
+                   </span>
+                   @enderror
+               </div>
+
+               <div class="form-group">
+                   <button type="submit" class="btn samuraimart-submit-button w-100">
+                       送信
+                   </button>
+               </div>
+           </form>
+       </div>
+   </div>
+</div>
+@endsection
