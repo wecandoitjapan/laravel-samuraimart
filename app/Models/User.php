@@ -46,4 +46,8 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Review::class);
     }
+    // withTimestamps()メソッドをつなげることで、中間テーブルの場合もcreated_atカラムやupdated_atカラムの値が自動的に更新される
+    public function favorite_products() {
+        return $this->belongsToMany(Product::class)->withTimestamps();
+    }
 }
