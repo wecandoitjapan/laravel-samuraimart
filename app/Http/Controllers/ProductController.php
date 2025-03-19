@@ -14,13 +14,30 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    //  作成されたすべての商品を表示
-    public function index()
-    {
-        
-        $products = Product::all();
+     public function index(Request $request)
 
-        return view('products.index', compact('products'));
+    {
+        $keyword = $request->keyword;
+
+        if ($request->category !== null) {
+            $products = Product::where('category_id', $request->category)->sortable()->paginate(15);
+            $total_count = Product::where('category_id', $request->category)->count();
+            $category = Category::find($request->category);
+        // HTTPリクエストにkeywordパラメータが存在する場合（検索ボタンがクリックされた場合）は、その値を使って商品を検索する処理
+        } elseif ($keyword !== null) {
+            $products = Product::where('name', 'like', "%{$keyword}%")->sortable()->paginate(15);
+            $total_count = $products->total();
+            $category = null;
+        } else {
+            $products = Product::sortable()->paginate(15);
+            $total_count = "";
+            $category = null;
+        }
+        // カテゴリーを表示
+        $categories = Category::all();
+        $major_category_names = Category::pluck('major_category_name')->unique();
+
+        return view('products.index', compact('products', 'category', 'categories', 'major_category_names', 'total_count', 'keyword'));
     }
 
     /**

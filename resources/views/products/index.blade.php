@@ -2,7 +2,31 @@
 
 @section('content')
 <div class="row">
+    <!-- カテゴリー表示 -->
+<div class="col-2">
+        @component('components.sidebar', ['categories' => $categories, 'major_category_names' => $major_category_names])
+        @endcomponent
+    </div>
    <div class="col-9">
+   <!-- 絞り込みができた時の表示 -->
+   <div class="container">
+            @if ($category !== null)
+                <a href="{{ route('products.index') }}">トップ</a> > <a href="#">{{ $category->major_category_name }}</a> > {{ $category->name }}
+                <!-- 絞り込んでいるカテゴリー名を表示 -->
+                <h1>{{ $category->name }}の商品一覧{{$total_count}}件</h1>
+                <!-- パンくずリストと検索ワードを表示 -->
+            @elseif ($keyword !== null)
+                <a href="{{ route('products.index') }}">トップ</a> > 商品一覧
+                <h1>"{{ $keyword }}"の検索結果{{$total_count}}件</h1>
+            @endif
+        </div>
+        <!-- ソート機能 -->
+        <div>
+            Sort By
+            @sortablelink('id', 'ID')
+            @sortablelink('price', 'Price')
+            @sortablelink('created_At', 'created_At')
+        </div>
        <div class="container mt-4">
            <div class="row w-100">
                @foreach($products as $product)
@@ -22,6 +46,8 @@
                @endforeach
            </div>
        </div>
+       <!-- カテゴリーで絞り込んだ条件を保持してページング -->
+       {{ $products->appends(request()->query())->links() }}
    </div>
 </div>
 @endsection
