@@ -37,15 +37,18 @@
                    </li>
                @else
                <!-- ログインしている場合 -->
-                   <li class="nav-item mr-5">
-                       <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                           ログアウト
-                       </a>
+               <li class="nav-item mr-5">
+                    <a class="nav-link" href="{{ route('mypage') }}">
+                        <i class="fas fa-user mr-1"></i><label>マイページ</label>
+                    </a>
+                </li>
+            <!-- お気に入り -->
+                <li class="nav-item mr-5">
+          <a class="nav-link" href="{{ route('mypage.favorite') }}">
+            <i class="far fa-heart"></i>
+          </a>
+        </li>
 
-                       <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                           @csrf
-                       </form>
-                   </li>
                @endguest
            </ul>
        </div>
