@@ -47,9 +47,12 @@
           <a class="nav-link" href="{{ route('mypage.favorite') }}">
             <i class="far fa-heart"></i>
           </a>
+        <li class="nav-item mr-5">
+          <a class="nav-link" href="{{ route('carts.index') }}">
+            <i class="fas fa-shopping-cart"></i>
+          </a>
         </li>
-
-               @endguest
+         @endguest
            </ul>
        </div>
    </div>
