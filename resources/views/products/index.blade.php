@@ -32,7 +32,12 @@
                @foreach($products as $product)
                <div class="col-3">
                    <a href="{{route('products.show', $product)}}">
-                       <img src="{{ asset('img/dummy.png')}}" class="img-thumbnail">
+                    <!-- adminで登録した画像を表示する -->
+                   @if ($product->image !== "")
+                        <img src="{{ asset($product->image) }}" class="img-thumbnail">
+                        @else
+                        <img src="{{ asset('img/dummy.png')}}" class="img-thumbnail">
+                        @endif
                    </a>
                    <div class="row">
                        <div class="col-12">
