@@ -34,6 +34,8 @@ class ProductController extends AdminController
         // 一覧画面ではカテゴリーIDではなく、カテゴリー名を表示する
         $grid->column('category.name', __('Category Name'));
         $grid->column('image', __('Image'))->image();
+        // お勧め
+        $grid->column('recommend_flag', __('Recommend Flag'));
         $grid->column('created_at', __('Created at'))->sortable();
         $grid->column('updated_at', __('Updated at'))->sortable();
 
@@ -42,6 +44,8 @@ class ProductController extends AdminController
             $filter->like('description', '商品説明');
             $filter->between('price', '金額');
             $filter->in('category_id', 'カテゴリー')->multipleSelect(Category::all()->pluck('name', 'id'));
+            // おすすめ
+            $filter->equal('recommend_flag', 'おすすめフラグ')->select(['0' => 'false', '1' => 'true']);
         });
 
         return $grid;
@@ -64,6 +68,8 @@ class ProductController extends AdminController
         // 表示画面ではカテゴリーIDではなく、カテゴリー名を表示する
         $show->field('category.name', __('Category Name'));
         $show->field('image', __('Image'))->image();
+        // お勧め
+        $show->field('recommend_flag', __('Recommend Flag'));
         $show->field('created_at', __('Created at'));
         $show->field('updated_at', __('Updated at'));
 
@@ -85,6 +91,8 @@ class ProductController extends AdminController
         // 存在するカテゴリー名から選択
         $form->select('category_id', __('Category Name'))->options(Category::all()->pluck('name', 'id'));
         $form->image('image', __('Image'));
+        // おすすめ
+        $form->switch('recommend_flag', __('Recommend Flag'));
 
         return $form;
     }
