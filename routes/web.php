@@ -41,6 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::put('users/mypage/password', 'update_password')->name('mypage.update_password');  
         // お気に入り登録
         Route::get('users/mypage/favorite', 'favorite')->name('mypage.favorite');
+        // 退会
+        Route::delete('users/mypage/delete', 'destroy')->name('mypage.destroy');
     });
     // カートの中身を確認するページへのURLを設定
     Route::controller(CartController::class)->group(function () {
