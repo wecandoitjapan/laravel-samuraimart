@@ -4,14 +4,14 @@
 <div class="row">
     <!-- カテゴリー表示 -->
 <div class="col-2">
-        @component('components.sidebar', ['categories' => $categories, 'major_category_names' => $major_category_names])
+@component('components.sidebar', ['categories' => $categories, 'major_categories' => $major_categories])
         @endcomponent
     </div>
    <div class="col-9">
    <!-- 絞り込みができた時の表示 -->
    <div class="container">
             @if ($category !== null)
-                <a href="{{ route('products.index') }}">トップ</a> > <a href="#">{{ $category->major_category_name }}</a> > {{ $category->name }}
+            <a href="{{ route('products.index') }}">トップ</a> > <a href="#">{{ $major_category->name }}</a> > {{ $category->name }}
                 <!-- 絞り込んでいるカテゴリー名を表示 -->
                 <h1>{{ $category->name }}の商品一覧{{$total_count}}件</h1>
                 <!-- パンくずリストと検索ワードを表示 -->
