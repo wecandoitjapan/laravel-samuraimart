@@ -43,6 +43,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('users/mypage/favorite', 'favorite')->name('mypage.favorite');
         // 退会
         Route::delete('users/mypage/delete', 'destroy')->name('mypage.destroy');
+        // 注文履歴一覧
+        Route::get('users/mypage/cart_history', 'cart_history_index')->name('mypage.cart_history');
+        // 注文詳細画面
+        Route::get('users/mypage/cart_history/{num}', 'cart_history_show')->name('mypage.cart_history_show');
     });
     // カートの中身を確認するページへのURLを設定
     Route::controller(CartController::class)->group(function () {

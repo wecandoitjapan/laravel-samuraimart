@@ -176,3 +176,7 @@ body {
         color: #ffffff;
         background-color: #d94b0e;
       }
+/* 注文一覧 */
+      th, td {
+        background-color: #f8fafc !important;
+      }
