@@ -41,6 +41,8 @@
                         <input type="hidden" name="name" value="{{ $favorite_product->name }}">
                         <input type="hidden" name="price" value="{{ $favorite_product->price }}">
                         <input type="hidden" name="image" value="{{ $favorite_product->image }}">
+                        <!-- 送料 -->
+                        <input type="hidden" name="carriage" value="{{ $favorite_product->carriage_flag }}">
                         <input type="hidden" name="qty" value="1">
                         <input type="hidden" name="weight" value="0">
                         <button type="submit" class="btn samuraimart-favorite-add-cart">カートに入れる</button>
