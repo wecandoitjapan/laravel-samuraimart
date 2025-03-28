@@ -73,35 +73,16 @@
            </div>
        </div>
 <!-- 購入画面 -->
-       <form method="post" action="{{route('carts.destroy')}}" class="d-flex justify-content-end mt-3">
-            @csrf
-            <input type="hidden" name="_method" value="DELETE">
+            <div class="d-flex justify-content-end mt-3"> 
             <a href="{{route('top')}}" class="btn samuraimart-favorite-button border-dark text-dark mr-3">
                 買い物を続ける
             </a>
             @if ($total > 0)
-            <div class="btn samuraimart-submit-button" data-bs-toggle="modal" data-bs-target="#buy-confirm-modal">購入を確定する</div>
+            <a href="{{ route('checkout.index') }}" class="btn samuraimart-submit-button">購入に進む</a>
             @else
-            <div class="btn samuraimart-submit-button disabled" data-bs-toggle="modal" data-bs-target="#buy-confirm-modal">購入を確定する</div>
+            <button class="btn samuraimart-submit-button disabled">購入に進む</button>
             @endif
-            <!-- モーダルウィンドウ -->
-            <div class="modal fade" id="buy-confirm-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="staticBackdropLabel">購入を確定しますか？</h5>
-                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="閉じる">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn samuraimart-favorite-button border-dark text-dark" data-bs-dismiss="modal">閉じる</button>
-                            <button type="submit" class="btn samuraimart-submit-button">購入</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
+            
 
    </div>
 </div>
