@@ -17,6 +17,15 @@
                <h1 class="">
                    {{$product->name}}
                </h1>
+
+                <!-- 星評価 -->
+                @if ($product->reviews()->exists())
+                <p>
+                <span class="samuraimart-star-rating" data-rate="{{ round($product->reviews->avg('score'), 1)}}"></span>    {{ round($product->reviews->avg('score'), 1)}}<br>
+                </p>
+               
+                @endif
+
                <p class="">
                    {{$product->description}}
                </p>
@@ -80,6 +89,14 @@
            <hr class="w-100">
            <h3 class="float-left">カスタマーレビュー</h3>
        </div>
+
+       <!-- 星評価 -->
+       @if ($product->reviews()->exists())
+                <p>
+                <span class="samuraimart-star-rating" data-rate="{{ round($product->reviews->avg('score'), 1)}}"></span>   {{ round($product->reviews->avg('score'), 1)}}<br>
+                </p>
+                
+                @endif
 
        <div class="offset-1 col-10">
            <!-- レビューを実装する箇所-->
