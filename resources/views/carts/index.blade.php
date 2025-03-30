@@ -1,89 +1,98 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container d-flex justify-content-center mt-3">
-   <div class="w-75">
-       <h1>ショッピングカート</h1>
+<div class="container pt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h1 class="mb-5">ショッピングカート</h1>
 
-       <div class="row">
-           <div class="offset-8 col-4">
-               <div class="row">
-                   <div class="col-6">
-                       <h2>数量</h2>
-                   </div>
-                   <div class="col-6">
-                       <h2>合計</h2>
-                   </div>
-               </div>
-           </div>
-       </div>
-
-       <hr>
-
-       <div class="row">
-           @foreach ($cart as $product)
-           <div class="col-md-2 mt-2">
-               <a href="{{route('products.show', $product->id)}}">
-                <!-- adminで登録した画像が表示される -->
-               @if ($product->options->image)
-                    <img src="{{ asset($product->options->image) }}" class="img-fluid w-100">
-                    @else
-                    <img src="{{ asset('img/dummy.png')}}" class="img-fluid w-100">
-                    @endif
-               </a>
-           </div>
-           <div class="col-md-6 mt-4">
-               <h3 class="mt-4">{{$product->name}}</h3>
-           </div>
-           <div class="col-md-2">
-               <h3 class="w-100 mt-4">{{$product->qty}}</h3>
-           </div>
-           <div class="col-md-2">
-               <h3 class="w-100 mt-4">￥{{$product->qty * $product->price}}</h3>
-           </div>
-           @endforeach
-       </div>
-
-       <hr>
-
-        <div class="offset-8 col-4">
             <div class="row">
-                <div class="col-6">
-                    <h2>送料</h2>
+                <div class="col-md-8">
+                    <span class="fs-5 fw-bold">商品</span>
                 </div>
-                <div class="col-6">
-                    <h2>￥{{ $carriage_cost }}</h2>
+                <div class="col-md-2">
+                    <span class="fs-5 fw-bold">数量</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="fs-5 fw-bold">合計</span>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            @if ($cart->isEmpty())
+                <div class="row">
+                    <p class="mb-0">カートの中身は空です。</p>
+                </div>
+            @else
+                @foreach ($cart as $product)
+                    <div class="row align-items-center mb-2">
+                        <div class="col-md-2">
+                            <a href="{{ route('products.show', $product->id) }}">
+                                @if ($product->options->image)
+                                    <img src="{{ asset($product->options->image) }}" class="img-thumbnail samuraimart-product-img-cart">
+                                @else
+                                    <img src="{{ asset('img/dummy.png')}}" class="img-thumbnail samuraimart-product-img-cart">
+                                @endif
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="fs-5">
+                                <a href="{{ route('products.show', $product->id) }}" class="link-dark">{{ $product->name }}</a>
+                            </span>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="fs-5">{{ number_format($product->qty) }}</span>
+                        </div>
+                        <div class="col-md-2">
+                            <span class="fs-5">￥{{ number_format($product->qty * $product->price) }}</span>
+                        </div>
+                    </div>
+                @endforeach
+            @endif
+
+            <hr class="my-4">
+
+            <div class="row justify-content-end">
+                <div class="col-md-2">
+                    <span class="fs-5 fw-bold">送料</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="fs-5">￥{{ number_format($carriage_cost) }}</span>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="row justify-content-end mb-4">
+                <div class="col-md-2">
+                    <span class="fs-5 fw-bold">合計</span>
+                </div>
+                <div class="col-md-2">
+                    <span class="fs-5 fw-bold">￥{{ number_format($total) }}</span>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <p class="text-end mb-1">表示価格は税込みです。</p>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-md-3 mb-4">
+                    <a href="{{route('products.index')}}" class="btn samuraimart-favorite-button text-favorite w-100">
+                        買い物を続ける
+                    </a>
+                </div>
+
+                <div class="col-md-3 mb-4">
+                    @if ($total > 0)
+                        <a href="{{ route('checkout.index') }}" class="btn samuraimart-submit-button text-white w-100">購入に進む</a>
+                    @else
+                        <button class="btn samuraimart-submit-button-disabled w-100">購入に進む</button>
+                    @endif
                 </div>
             </div>
         </div>
-
-       <hr>
-
-       <div class="offset-8 col-4">
-           <div class="row">
-               <div class="col-6">
-                   <h2>合計</h2>
-               </div>
-               <div class="col-6">
-                   <h2>￥{{$total}}</h2>
-               </div>
-               <div class="col-12 d-flex justify-content-end">
-                   表示価格は税込みです
-               </div>
-           </div>
-       </div>
-<!-- 購入画面 -->
-            <div class="d-flex justify-content-end mt-3"> 
-            <a href="{{route('top')}}" class="btn samuraimart-favorite-button border-dark text-dark mr-3">
-                買い物を続ける
-            </a>
-            @if ($total > 0)
-            <a href="{{ route('checkout.index') }}" class="btn samuraimart-submit-button">購入に進む</a>
-            @else
-            <button class="btn samuraimart-submit-button disabled">購入に進む</button>
-            @endif
-            
-
-   </div>
+    </div>
 </div>
 @endsection

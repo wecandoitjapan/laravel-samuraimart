@@ -1,63 +1,86 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="row">
-    <!-- カテゴリー表示 -->
-<div class="col-2">
-@component('components.sidebar', ['categories' => $categories, 'major_categories' => $major_categories])
-        @endcomponent
-    </div>
-   <div class="col-9">
-   <!-- 絞り込みができた時の表示 -->
-   <div class="container">
+<div class="container pt-2">
+    <div class="row">
+        <div class="col-md-2">
+            @component('components.sidebar', ['categories' => $categories, 'major_categories' => $major_categories])
+            @endcomponent
+        </div>
+        <div class="col">
             @if ($category !== null)
-            <a href="{{ route('products.index') }}">トップ</a> > <a href="#">{{ $major_category->name }}</a> > {{ $category->name }}
-                <!-- 絞り込んでいるカテゴリー名を表示 -->
-                <h1>{{ $category->name }}の商品一覧{{$total_count}}件</h1>
-                <!-- パンくずリストと検索ワードを表示 -->
+                <nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('top') }}">トップ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ $category->name }}</li>
+                    </ol>
+                </nav>
+                <h1>{{ $category->name }}の商品一覧<span class="ms-3">{{ number_format($total_count) }}件</span></h1>
             @elseif ($keyword !== null)
-                <a href="{{ route('products.index') }}">トップ</a> > 商品一覧
-                <h1>"{{ $keyword }}"の検索結果{{$total_count}}件</h1>
+                <nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('top') }}">トップ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">商品一覧</li>
+                    </ol>
+                </nav>
+                <h1>"{{ $keyword }}"の検索結果<span class="ms-3">{{ number_format($total_count) }}件</span></h1>
+            @else
+                <nav class="mb-4" style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('top') }}">トップ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">商品一覧</li>
+                    </ol>
+                </nav>
+                <h1>商品一覧<span class="ms-3">{{ number_format($total_count) }}件</span></h1>
             @endif
+            <div class="d-flex align-items-center mb-4">
+                <span class="small me-2">並べ替え</span>
+                <form method="GET" action="{{ route('products.index') }}">
+                    <!-- 絞り込みや検索をおこなった状態で並べ替え機能を使えるようにするため、以下のコードでは変数$categoryや変数$keywordが存在する場合にその情報も一緒に送信 -->
+                    @if ($category)
+                        <input type="hidden" name="category" value="{{ $category->id }}">
+                    @endif
+                    @if ($keyword)
+                        <input type="hidden" name="keyword" value="{{ $keyword }}">
+                    @endif
+                    <select class="form-select form-select-sm" name="select_sort" onChange="this.form.submit();">
+                        <!-- 変数$sorts（「どのカラムをどの順番で並べ替えるか」という情報）の中身を展開し、セレクトボックスを作成 -->
+                        @foreach ($sorts as $key => $value)
+                            @if ($sorted === $value)
+                                <option value="{{ $value }}" selected>{{ $key }}</option>
+                            @else
+                                <option value="{{ $value }}">{{ $key }}</option>
+                            @endif
+                        @endforeach
+                    </select>
+                </form>
+            </div>
+            <div class="row">
+                @foreach($products as $product)
+                    <div class="col-md-3 mb-3">
+                        <a href="{{ route('products.show', $product) }}">
+                            @if ($product->image !== "")
+                                <img src="{{ asset($product->image) }}" class="img-thumbnail samuraimart-product-img-products">
+                            @else
+                                <img src="{{ asset('img/dummy.png')}}" class="img-thumbnail samuraimart-product-img-products">
+                            @endif
+                        </a>
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="samuraimart-product-label mt-2">
+                                    <a href="{{ route('products.show', $product) }}" class="link-dark">{{$product->name}}</a>
+                                    <br>
+                                    <label>￥{{ number_format($product->price) }}</label>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+            <div class="mb-4">
+                {{ $products->appends(request()->query())->links() }}
+            </div>
         </div>
-        <!-- ソート機能 -->
-        <div>
-            Sort By
-            @sortablelink('id', 'ID')
-            @sortablelink('price', 'Price')
-            @sortablelink('created_at', 'Create_At')
-        </div>
-       <div class="container mt-4">
-           <div class="row w-100">
-               @foreach($products as $product)
-               <div class="col-3">
-                   <a href="{{route('products.show', $product)}}">
-                    <!-- adminで登録した画像を表示する -->
-                   @if ($product->image !== "")
-                        <img src="{{ asset($product->image) }}" class="img-thumbnail">
-                        @else
-                        <img src="{{ asset('img/dummy.png')}}" class="img-thumbnail">
-                        @endif
-                   </a>
-                   <div class="row">
-                       <div class="col-12">
-                           <p class="samuraimart-product-label mt-2">
-                               {{$product->name}}<br>
-                               <!-- 星評価 -->
-                               @if ($product->reviews()->exists())
-                            <span class="samuraimart-star-rating" data-rate="{{ round($product->reviews->avg('score') * 2) / 2 }}"></span>
-                            {{ round($product->reviews->avg('score'), 1) }}<br>
-                                @endif
-                               <label>￥{{$product->price}}</label>
-                           </p>
-                       </div>
-                   </div>
-               </div>
-               @endforeach
-           </div>
-       </div>
-       <!-- カテゴリーで絞り込んだ条件を保持してページング -->
-       {{ $products->appends(request()->query())->links() }}
-   </div>
+    </div>
 </div>
 @endsection

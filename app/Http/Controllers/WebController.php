@@ -21,6 +21,10 @@ class WebController extends Controller
         // おすすめフラグがONの商品を3つ取得してビューに渡す
         $recommend_products = Product::where('recommend_flag', true)->take(3)->get();
 
-        return view('web.index', compact('major_categories', 'categories', 'recently_products', 'recommend_products'));
+        // 注目商品の追加
+        // 各商品の平均評価を算出し、その平均評価が高い順に並べ替え
+        $featured_products = Product::withAvg('reviews', 'score')->orderBy('reviews_avg_score', 'desc')->take(4)->get();
+
+        return view('web.index', compact('major_categories', 'categories', 'recently_products', 'recommend_products','featured_products'));
     }
 }
